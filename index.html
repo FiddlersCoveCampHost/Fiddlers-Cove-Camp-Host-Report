@@ -1,386 +1,868 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fiddler's Cove Test App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 10px;
-      padding: 0;
-      box-sizing: border-box;
-      transition: background-color 0.5s, color 0.5s;
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 1.8rem;
-      margin-bottom: 20px;
-    }
-
-    .section {
-      margin-bottom: 20px;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      background-color: white;
-      transition: background-color 0.3s, box-shadow 0.3s;
-    }
-
-    .rv-sites {
-      display: flex;
-      gap: 15px;
-    }
-
-    .column {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end; /* Align toggles to the bottom */
-      flex-grow: 1;
-      padding: 10px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      background-color: #f9f9f9;
-    }
-
-    .column-title {
-      margin-top: auto; /* Keep title at the top */
-      font-weight: bold;
-      margin-bottom: 10px;
-      text-align: center;
-    }
-
-    .rv-site, .tent-site {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 90%;
-      margin: 5px 0;
-      padding: 8px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      background-color: #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    label {
-      font-size: 1rem;
-    }
-
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 34px;
-      height: 20px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: 0.4s;
-      border-radius: 20px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 14px;
-      width: 14px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: 0.4s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: #4caf50;
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(14px);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    th, td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f5f5f5;
-      font-weight: bold;
-    }
-
-    .add-row-btn, .remove-row-btn {
-      margin-top: 10px;
-      padding: 8px 12px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 4px;
-    }
-
-    .remove-row-btn {
-      background-color: #f44336;
-    }
-
-    .add-row-btn:hover {
-      background-color: #45a049;
-    }
-
-    .remove-row-btn:hover {
-      background-color: #d32f2f;
-    }
-
-    /* Themes */
-    .day-theme {
-      background-color: #f5f5f5;
-      color: #000;
-    }
-
-    .night-theme {
-      background-color: #2c3e50;
-      color: #ecf0f1;
-    }
-
-    .night-theme .column {
-      background-color: #3c4f60;
-    }
-
-    .night-theme .rv-site {
-      background-color: #475a6a;
-    }
-
-    .night-theme .column-title {
-      color: #ecf0f1;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC Camp Host Loggin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
 </head>
 <body>
-  <h1>Fiddler's Cove Test App</h1>
+    <h1>FC Camp Host Logging</h1>
+<!-- Dark Mode Toggle -->
+<div class="section">
+  <label for="darkModeToggle" class="toggle-label">
+      <input type="checkbox" id="darkModeToggle" class="toggle-input" onclick="toggleDarkMode()">
+      <span class="toggle-slider"></span>
+      Dark Mode
+  </label>
+</div>
 
-  <!-- Theme Toggle -->
-  <div class="section">
-    <label class="switch">
-      <input type="checkbox" id="manual-theme-toggle">
-      <span class="slider"></span>
-    </label>
-    <label for="manual-theme-toggle">Toggle Day/Night Mode</label>
-  </div>
+<style>
+  .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 16px;
+  }
+  .toggle-input {
+      display: none;
+  }
+  .toggle-slider {
+      position: relative;
+      width: 40px;
+      height: 20px;
+      background-color: #ccc;
+      border-radius: 20px;
+      margin-right: 10px;
+      transition: background-color 0.3s;
+  }
+  .toggle-slider:before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background-color: #fff;
+      border-radius: 50%;
+      top: 3px;
+      left: 3px;
+      transition: transform 0.3s;
+  }
+  .toggle-input:checked + .toggle-slider {
+      background-color: #2196F3;
+  }
+  .toggle-input:checked + .toggle-slider:before {
+      transform: translateX(20px);
+  }
+</style>
 
-  <!-- Turnover Time Section -->
-  <div class="section">
-    <label for="turnover-time">Turnover Time:</label>
-    <input type="text" id="turnover-time" placeholder="Enter turnover time">
-  </div>
+<script>
+  function toggleDarkMode() {
+      const body = document.body;
+      const isDarkMode = body.classList.toggle('dark-mode');
 
-  <!-- Turnover With Section -->
-  <div class="section">
-    <p>Turnover With:</p>
-    <label><input type="checkbox" id="judith"> Judith</label><br>
-    <label><input type="checkbox" id="ria"> Ria</label><br>
-    <label><input type="checkbox" id="karla"> Karla</label>
-  </div>
+      if (isDarkMode) {
+          body.style.backgroundColor = '#121212'; // Dark background
+          body.style.color = '#ffffff'; // Light text
+          body.style.transition = 'background-color 0.3s, color 0.3s';
+      } else {
+          body.style.backgroundColor = '#ffffff'; // Light background
+          body.style.color = '#000000'; // Dark text
+          body.style.transition = 'background-color 0.3s, color 0.3s';
+      }
+  }
+</script>
 
-  <!-- Locked Gate Section -->
-  <div class="section">
-    <label for="locked-gate">Locked Gate:</label>
-    <input type="text" id="locked-gate" placeholder="Input gate locked time">
-  </div>
 
-  <!-- RV Sites Section -->
-  <div class="section">
-    <p>RV Sites (Toggle Switch for Empty/Occupied):</p>
-    <div class="rv-sites">
-      <!-- Back Row -->
-      <div class="column">
-        <div class="column-title">Back Row</div>
-      </div>
-
-      <!-- Middle Row -->
-      <div class="column">
-        <div class="column-title">Middle Row</div>
-      </div>
-
-      <!-- Front Row -->
-      <div class="column">
-        <div class="column-title">Front Row</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Tent Sites Section -->
-  <div class="section">
-    <p>Tent Sites:</p>
-    <div class="tent-sites">
-      <div class="tent-site">
-        <label>Tent 1</label>
-        <label class="switch">
-          <input type="checkbox" id="tent-1">
-          <span class="slider"></span>
-        </label>
-      </div>
-      <div class="tent-site">
-        <label>Tent 2</label>
-        <label class="switch">
-          <input type="checkbox" id="tent-2">
-          <span class="slider"></span>
-        </label>
-      </div>
-    </div>
-  </div>
-
-  <!-- Late Check-In Section -->
-  <div class="section">
-    <p>Late Check-In:</p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Site</th>
-          <th>Time</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="late-check-in-body">
-        <tr>
-          <td><input type="text" placeholder="Enter name"></td>
+<!-- Completed Turnover Table -->
+<div class="section">
+  <h3>Turnover</h3>
+  <table>
+      <tr>
+          <td>Completed turnover at:</td>
+          <td><input type="text" placeholder="e.g., 1645" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 1645"></td>
           <td>
-            <select>
-              <option>Overflow 1</option>
-              <option>1</option>
-              <option>2</option>
-              <!-- Add remaining sites dynamically -->
-            </select>
+              <select id="turnoverPerson" onchange="checkManualInput(this)">
+                  <option value="">Select Name</option>
+                  <option value="Judith">Judith</option>
+                  <option value="Veronica">Veronica</option>
+                  <option value="Ria">Ria</option>
+                  <option value="Karla">Karla</option>
+                  <option value="Diane">Diane</option>
+                  <option value="manual">Manual Input</option>
+              </select>
+              <input type="text" id="manualInput" placeholder="Enter name" style="display:none;">
           </td>
-          <td><input type="text" placeholder="Enter time"></td>
-          <td><button class="remove-row-btn">Remove</button></td>
-        </tr>
-      </tbody>
-    </table>
-    <button class="add-row-btn" id="add-row">Add Row</button>
-  </div>
+      </tr>
+  </table>
+</div>
 
-  <script>
-    const backRow = document.querySelector('.rv-sites .column:nth-child(1)');
-    const middleRow = document.querySelector('.rv-sites .column:nth-child(2)');
-    const frontRow = document.querySelector('.rv-sites .column:nth-child(3)');
+<style>
+  table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+  }
+  table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+  }
+  input[type="text"] {
+      width: calc(100% - 16px); /* Adjusts width to fit inside the table cell with padding */
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box; /* Ensures padding and border are included in width */
+  }
+  select {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+</style>
 
-    // Add Back Row (Overflow 1 to 12)
-    ['Overflow 1', ...Array.from({ length: 12 }, (_, i) => i + 1)].forEach((site) => {
-      const div = document.createElement('div');
-      div.className = 'rv-site';
-      div.innerHTML = `
-        <label>${site}</label>
-        <label class="switch">
-          <input type="checkbox" id="rv-${site.toString().toLowerCase().replace(/\s/g, '-')}" />
-          <span class="slider"></span>
-        </label>
-      `;
-      backRow.appendChild(div);
-    });
+<script>
+  function checkManualInput(selectElement) {
+      const manualInput = document.getElementById('manualInput');
+      if (selectElement.value === 'manual') {
+          manualInput.style.display = 'block';
+      } else {
+          manualInput.style.display = 'none';
+          manualInput.value = ''; // Clear manual input when hidden
+      }
+  }
+</script>
 
-    // Add Middle Row (13 to 32)
-    for (let i = 13; i <= 32; i++) {
-      const div = document.createElement('div');
-      div.className = 'rv-site';
-      div.innerHTML = `
-        <label>${i}</label>
-        <label class="switch">
-          <input type="checkbox" id="rv-${i}">
-          <span class="slider"></span>
-        </label>
-      `;
-      middleRow.appendChild(div);
-    }
 
-    // Add Front Row (33 to 59)
-    for (let i = 33; i <= 59; i++) {
-      const div = document.createElement('div');
-      div.className = 'rv-site';
-      div.innerHTML = `
-        <label>${i}</label>
-        <label class="switch">
-          <input type="checkbox" id="rv-${i}">
-          <span class="slider"></span>
-        </label>
-      `;
-      frontRow.appendChild(div);
-    }
 
-    // Add Late Check-In Rows Dynamically
-    document.getElementById('add-row').addEventListener('click', () => {
-      const tableBody = document.getElementById('late-check-in-body');
-      const row = document.createElement('tr');
+<!-- Gate Locked Table -->
+<div class="section">
+  <h3>Gate Locked</h3>
+  <table>
+      <tr>
+          <td>Gate Locked at:</td>
+          <td><input type="text" placeholder="e.g., 1645" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 1645"></td>
+      </tr>
+  </table>
+</div>
+
+<style>
+  table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+  }
+  table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+  }
+  input[type="text"] {
+      width: calc(100% - 16px); /* Adjust width to fit inside the table cell with padding */
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box; /* Ensures padding and border are included in width */
+  }
+</style>
+
+
+<!-- Security Checks Section -->
+<div class="section">
+  <h3>Security Checks</h3>
+
+  <!-- Table 1: 1700-1900 -->
+  <h4>1700-1900</h4>
+  <table id="table1700">
+      <tr>
+          <td>Time:</td>
+          <td><input type="text" placeholder="e.g., 1730" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 1730"></td>
+          <td>
+              <select onchange="handleSelection(this, 'output1700-0')">
+                  <option value="">Select</option>
+                  <option value="routine">Routine</option>
+                  <option value="discrepancy">Discrepancy Notice</option>
+                  <option value="other">Other</option>
+              </select>
+          </td>
+          <td><textarea id="output1700-0" placeholder="Auto-filled or manual input"></textarea></td>
+          <td><button onclick="removeRow(this)">Remove</button></td>
+      </tr>
+  </table>
+  <button onclick="addRow('table1700', 'output1700')">Add Row</button>
+
+  <!-- Table 2: 1900-2100 -->
+  <h4>1900-2100</h4>
+  <table id="table1900">
+      <tr>
+          <td>Time:</td>
+          <td><input type="text" placeholder="e.g., 1930" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 1930"></td>
+          <td>
+              <select onchange="handleSelection(this, 'output1900-0')">
+                  <option value="">Select</option>
+                  <option value="routine">Routine</option>
+                  <option value="discrepancy">Discrepancy Notice</option>
+                  <option value="other">Other</option>
+              </select>
+          </td>
+          <td><textarea id="output1900-0" placeholder="Auto-filled or manual input"></textarea></td>
+          <td><button onclick="removeRow(this)">Remove</button></td>
+      </tr>
+  </table>
+  <button onclick="addRow('table1900', 'output1900')">Add Row</button>
+
+  <!-- Table 3: 2100-2200 -->
+  <h4>2100-2200</h4>
+  <table id="table2100">
+      <tr>
+          <td>Time:</td>
+          <td><input type="text" placeholder="e.g., 2130" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 2130"></td>
+          <td>
+              <select onchange="handleSelection(this, 'output2100-0')">
+                  <option value="">Select</option>
+                  <option value="routine">Routine</option>
+                  <option value="discrepancy">Discrepancy Notice</option>
+                  <option value="other">Other</option>
+              </select>
+          </td>
+          <td><textarea id="output2100-0" placeholder="Auto-filled or manual input"></textarea></td>
+          <td><button onclick="removeRow(this)">Remove</button></td>
+      </tr>
+  </table>
+  <button onclick="addRow('table2100', 'output2100')">Add Row</button>
+</div>
+
+<script>
+  function handleSelection(selectElement, outputId) {
+      const output = document.getElementById(outputId);
+      if (selectElement.value === "routine") {
+          output.value = "Completed security check and inspection of FC property";
+          output.readOnly = true;
+      } else {
+          output.value = "";
+          output.placeholder = "Enter details...";
+          output.readOnly = false;
+      }
+  }
+
+  function addRow(tableId, outputPrefix) {
+      const table = document.getElementById(tableId);
+      const rowCount = table.rows.length;
+      const row = table.insertRow(-1);
       row.innerHTML = `
-        <td><input type="text" placeholder="Enter name"></td>
-        <td>
-          <select>
-            <option>Overflow 1</option>
-            <option>1</option>
-            <option>2</option>
-          </select>
-        </td>
-        <td><input type="text" placeholder="Enter time"></td>
-        <td><button class="remove-row-btn">Remove</button></td>
+          <td>Time:</td>
+          <td><input type="text" placeholder="e.g., 1930" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 1930"></td>
+          <td>
+              <select onchange="handleSelection(this, '${outputPrefix}-${rowCount}')">
+                  <option value="">Select</option>
+                  <option value="routine">Routine</option>
+                  <option value="discrepancy">Discrepancy Notice</option>
+                  <option value="other">Other</option>
+              </select>
+          </td>
+          <td><textarea id="${outputPrefix}-${rowCount}" placeholder="Auto-filled or manual input"></textarea></td>
+          <td><button onclick="removeRow(this)">Remove</button></td>
       `;
-      tableBody.appendChild(row);
+  }
 
-      // Add remove functionality to the new row
-      row.querySelector('.remove-row-btn').addEventListener('click', () => {
-        row.remove();
-      });
-    });
+  function removeRow(button) {
+      const row = button.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+  }
+</script>
 
-    // Day/Night Theme Logic
-    const body = document.body;
-    const sanDiegoCoords = { lat: 32.7157, lng: -117.1611 };
-    let sunrise, sunset;
+<style>
+  table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+  }
+  table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      vertical-align: top;
+  }
+  input[type="text"] {
+      width: calc(100% - 16px);
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+  select {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+  textarea {
+      width: calc(100% - 16px);
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      height: 60px;
+      resize: none;
+  }
+</style>
 
-    async function fetchSunTimes() {
-      const response = await fetch(
-        `https://api.sunrise-sunset.org/json?lat=${sanDiegoCoords.lat}&lng=${sanDiegoCoords.lng}&formatted=0`
-      );
-      const data = await response.json();
 
-      sunrise = new Date(data.results.sunrise).getTime();
-      sunset = new Date(data.results.sunset).getTime();
+
+<!-- Late Check-In Section -->
+<div class="section">
+  <h3>Late Check-In</h3>
+  <table id="lateCheckInTable">
+      <!-- Empty table, rows will be added dynamically -->
+  </table>
+  <button onclick="addLateCheckInRow()">Add Row</button>
+</div>
+
+<!-- No Show Section -->
+<div class="section">
+  <h3>No Show</h3>
+  <table id="noShowTable">
+      <!-- Empty table, rows will be added dynamically -->
+  </table>
+  <button onclick="addNoShowRow()">Add Row</button>
+</div>
+
+<!-- Maintenance Section -->
+<div class="section">
+  <h3>Maintenance</h3>
+  <table id="maintenanceTable">
+      <!-- Empty table, rows will be added dynamically -->
+  </table>
+  <button onclick="addRow('maintenanceTable')">Add Row</button>
+</div>
+
+<!-- Groundskeeping Section -->
+<div class="section">
+  <h3>Groundskeeping</h3>
+  <table id="groundskeepingTable">
+      <!-- Empty table, rows will be added dynamically -->
+  </table>
+  <button onclick="addRow('groundskeepingTable')">Add Row</button>
+</div>
+
+<!-- Miscellaneous Section -->
+<div class="section">
+  <h3>Miscellaneous</h3>
+  <table id="miscellaneousTable">
+      <!-- Empty table, rows will be added dynamically -->
+  </table>
+  <button onclick="addRow('miscellaneousTable')">Add Row</button>
+</div>
+
+<script>
+  function addLateCheckInRow() {
+      const table = document.getElementById('lateCheckInTable');
+      const row = table.insertRow(-1);
+      row.innerHTML = `
+          <td>Name:</td>
+          <td><input type="text" placeholder="Enter name"></td>
+          <td><input type="number" placeholder="Enter site number" min="1"></td>
+          <td><input type="tel" placeholder="e.g., 2100" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 2100"></td>
+          <td><button onclick="removeRow(this)">Remove</button></td>
+      `;
+  }
+
+  function addNoShowRow() {
+      const table = document.getElementById('noShowTable');
+      const row = table.insertRow(-1);
+      row.innerHTML = `
+          <td>Name:</td>
+          <td><input type="text" placeholder="Enter name"></td>
+          <td><input type="number" placeholder="Enter site number" min="1"></td>
+          <td><button onclick="removeRow(this)">Remove</button></td>
+      `;
+  }
+
+  function addRow(tableId) {
+      const table = document.getElementById(tableId);
+      const row = table.insertRow(-1);
+      row.innerHTML = `
+          <td>Time:</td>
+          <td><input type="tel" placeholder="e.g., 2100" maxlength="4" pattern="[0-2][0-9][0-5][0-9]" title="Enter military time like 2100"></td>
+          <td><input type="text" placeholder="Enter location"></td>
+          <td><input type="text" placeholder="Enter issue"></td>
+          <td><button onclick="removeRow(this)">Remove</button></td>
+      `;
+  }
+
+  function removeRow(button) {
+      const row = button.parentNode.parentNode;
+      row.parentNode.removeChild(row);
+  }
+</script>
+
+<style>
+  table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 20px;
+  }
+  table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      vertical-align: top;
+  }
+  input[type="text"], input[type="tel"], input[type="number"] {
+      width: calc(100% - 16px);
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+  }
+</style>
+
+
+
+
+<!-- RV Sites Section -->
+<div class="section">
+  <h3>RV Sites</h3>
+  <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <!-- Column 1: Back Row -->
+      <div style="text-align: center;">
+          <h4>Back Row</h4>
+          <div>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Overflow
+              </label><br>
+              <!-- Sites 1-12 -->
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 1
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 2
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 3
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 4
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 5
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 6
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 7
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 8
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 9
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 10
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 11
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 12
+              </label><br>
+          </div>
+      </div>
+
+      <!-- Column 2: Middle Row -->
+      <div style="text-align: center;">
+          <h4>Middle Row</h4>
+          <div>
+              <!-- Sites 32-13 -->
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 32
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 31
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 30
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 29
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 28
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 27
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 26
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 25
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 24
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 23
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 22
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 21
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 20
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 19
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 18
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 17
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 16
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 15
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 14
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 13
+              </label><br>
+          </div>
+      </div>
+
+      <!-- Column 3: Front Row -->
+      <div style="text-align: center;">
+          <h4>Front Row</h4>
+          <div>
+              <!-- Sites 33-59 -->
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 33
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 34
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 35
+              </label><br><!-- Sites 36-59 -->
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 36
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 37
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 38
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 39
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 40
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 41
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 42
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 43
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 44
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 45
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 46
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 47
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 48
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 49
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 50
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 51
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 52
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 53
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 54
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 55
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 56
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 57
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 58
+              </label><br>
+              <label class="toggle-label">
+                  <input type="checkbox" class="toggle-input">
+                  <span class="toggle-slider"></span>
+                  Site 59
+              </label><br>
+              
+              
+            
+          </div>
+      </div>
+  </div>
+</div>
+
+<style>
+  .toggle-label {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 5px;
+  }
+  .toggle-input {
+      display: none;
+  }
+  .toggle-slider {
+      position: relative;
+      width: 40px;
+      height: 20px;
+  </Style>
+
+
+  <!-- Tent Section -->
+<div class="section">
+    <h3>Tent Section</h3>
+    <div>
+        <label class="toggle-label">
+            <input type="checkbox" class="toggle-input">
+            <span class="toggle-slider"></span>
+            Tent 1
+        </label><br>
+        <label class="toggle-label">
+            <input type="checkbox" class="toggle-input">
+            <span class="toggle-slider"></span>
+            Tent 2
+        </label><br>
+    </div>
+</div>
+
+<style>
+    .toggle-label {
+        display: inline-flex;
+        align-items: center;
+        cursor: pointer;
+        font-size: 16px;
+        margin-bottom: 5px;
     }
-
-    function setThemeBasedOnTime() {
-      const now = new Date().getTime();
-      const isNight = now < sunrise || now >= sunset;
-
-      body.classList.toggle('night-theme', isNight);
-      body.classList.toggle('day-theme', !isNight);
+    .toggle-input {
+        display: none;
     }
+    .toggle-slider {
+        position: relative;
+        width: 40px;
+        height: 20px;
+        background-color: #ccc;
+        border-radius: 20px;
+        margin-right: 10px;
+        transition: background-color 0.3s;
+    }
+    .toggle-slider:before {
+        content: "";
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background-color: white;
+        border-radius: 50%;
+        top: 3px;
+        left: 3px;
+        transition: transform 0.3s;
+    }
+    .toggle-input:checked + .toggle-slider {
+        background-color: #2196F3;
+    }
+    .toggle-input:checked + .toggle-slider:before {
+        transform: translateX(20px);
+    }
+</style>
 
-    document.addEventListener('DOMContentLoaded', async () => {
-      await fetchSunTimes();
-      setThemeBasedOnTime();
-      setInterval(setThemeBasedOnTime, 60000);
-    });
-  </script>
+
+<!-- Submit Button -->
+<div class="section">
+  <button type="button">Submit</button>
+</div>
+
+
+
 </body>
 </html>
