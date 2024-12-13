@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiddler's Cove Test App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 10px;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.5s, color 0.5s;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: white;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .rv-sites {
+      display: flex;
+      gap: 15px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end; /* Align toggles to the bottom */
+      flex-grow: 1;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
+    }
+
+    .column-title {
+      margin-top: auto; /* Keep title at the top */
+      font-weight: bold;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .rv-site, .tent-site {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 90%;
+      margin: 5px 0;
+      padding: 8px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-size: 1rem;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 34px;
+      height: 20px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 20px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4caf50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(14px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f5f5f5;
+      font-weight: bold;
+    }
+
+    .add-row-btn, .remove-row-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+
+    .remove-row-btn {
+      background-color: #f44336;
+    }
+
+    .add-row-btn:hover {
+      background-color: #45a049;
+    }
+
+    .remove-row-btn:hover {
+      background-color: #d32f2f;
+    }
+
+    /* Themes */
+    .day-theme {
+      background-color: #f5f5f5;
+      color: #000;
+    }
+
+    .night-theme {
+      background-color: #2c3e50;
+      color: #ecf0f1;
+    }
+
+    .night-theme .column {
+      background-color: #3c4f60;
+    }
+
+    .night-theme .rv-site {
+      background-color: #475a6a;
+    }
+
+    .night-theme .column-title {
+      color: #ecf0f1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Fiddler's Cove Test App</h1>
+
+  <!-- Theme Toggle -->
+  <div class="section">
+    <label class="switch">
+      <input type="checkbox" id="manual-theme-toggle">
+      <span class="slider"></span>
+    </label>
+    <label for="manual-theme-toggle">Toggle Day/Night Mode</label>
+  </div>
+
+  <!-- Turnover Time Section -->
+  <div class="section">
+    <label for="turnover-time">Turnover Time:</label>
+    <input type="text" id="turnover-time" placeholder="Enter turnover time">
+  </div>
+
+  <!-- Turnover With Section -->
+  <div class="section">
+    <p>Turnover With:</p>
+    <label><input type="checkbox" id="judith"> Judith</label><br>
+    <label><input type="checkbox" id="ria"> Ria</label><br>
+    <label><input type="checkbox" id="karla"> Karla</label>
+  </div>
+
+  <!-- Locked Gate Section -->
+  <div class="section">
+    <label for="locked-gate">Locked Gate:</label>
+    <input type="text" id="locked-gate" placeholder="Input gate locked time">
+  </div>
+
+  <!-- RV Sites Section -->
+  <div class="section">
+    <p>RV Sites (Toggle Switch for Empty/Occupied):</p>
+    <div class="rv-sites">
+      <!-- Back Row -->
+      <div class="column">
+        <div class="column-title">Back Row</div>
+      </div>
+
+      <!-- Middle Row -->
+      <div class="column">
+        <div class="column-title">Middle Row</div>
+      </div>
+
+      <!-- Front Row -->
+      <div class="column">
+        <div class="column-title">Front Row</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tent Sites Section -->
+  <div class="section">
+    <p>Tent Sites:</p>
+    <div class="tent-sites">
+      <div class="tent-site">
+        <label>Tent 1</label>
+        <label class="switch">
+          <input type="checkbox" id="tent-1">
+          <span class="slider"></span>
+        </label>
+      </div>
+      <div class="tent-site">
+        <label>Tent 2</label>
+        <label class="switch">
+          <input type="checkbox" id="tent-2">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Late Check-In Section -->
+  <div class="section">
+    <p>Late Check-In:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Site</th>
+          <th>Time</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="late-check-in-body">
+        <tr>
+          <td><input type="text" placeholder="Enter name"></td>
+          <td>
+            <select>
+              <option>Overflow 1</option>
+              <option>1</option>
+              <option>2</option>
+              <!-- Add remaining sites dynamically -->
+            </select>
+          </td>
+          <td><input type="text" placeholder="Enter time"></td>
+          <td><button class="remove-row-btn">Remove</button></td>
+        </tr>
+      </tbody>
+    </table>
+    <button class="add-row-btn" id="add-row">Add Row</button>
+  </div>
+
+  <script>
+    const backRow = document.querySelector('.rv-sites .column:nth-child(1)');
+    const middleRow = document.querySelector('.rv-sites .column:nth-child(2)');
+    const frontRow = document.querySelector('.rv-sites .column:nth-child(3)');
+
+    // Add Back Row (Overflow 1 to 12)
+    ['Overflow 1', ...Array.from({ length: 12 }, (_, i) => i + 1)].forEach((site) => {
+      const div = document.createElement('div');
+      div.className = 'rv-site';
+      div.innerHTML = `
+        <label>${site}</label>
+        <label class="switch">
+          <input type="checkbox" id="rv-${site.toString().toLowerCase().replace(/\s/g, '-')}" />
+          <span class="slider"></span>
+        </label>
+      `;
+      backRow.appendChild(div);
+    });
+
+    // Add Middle Row (13 to 32)
+    for (let i = 13; i <= 32; i++) {
+      const div = document.createElement('div');
+      div.className = 'rv-site';
+      div.innerHTML = `
+        <label>${i}</label>
+        <label class="switch">
+          <input type="checkbox" id="rv-${i}">
+          <span class="slider"></span>
+        </label>
+      `;
+      middleRow.appendChild(div);
+    }
+
+    // Add Front Row (33 to 59)
+    for (let i = 33; i <= 59; i++) {
+      const div = document.createElement('div');
+      div.className = 'rv-site';
+      div.innerHTML = `
+        <label>${i}</label>
+        <label class="switch">
+          <input type="checkbox" id="rv-${i}">
+          <span class="slider"></span>
+        </label>
+      `;
+      frontRow.appendChild(div);
+    }
+
+    // Add Late Check-In Rows Dynamically
+    document.getElementById('add-row').addEventListener('click', () => {
+      const tableBody = document.getElementById('late-check-in-body');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" placeholder="Enter name"></td>
+        <td>
+          <select>
+            <option>Overflow 1</option>
+            <option>1</option>
+            <option>2</option>
+          </select>
+        </td>
+        <td><input type="text" placeholder="Enter time"></td>
+        <td><button class="remove-row-btn">Remove</button></td>
+      `;
+      tableBody.appendChild(row);
+
+      // Add remove functionality to the new row
+      row.querySelector('.remove-row-btn').addEventListener('click', () => {
+        row.remove();
+      });
+    });
+
+    // Day/Night Theme Logic
+    const body = document.body;
+    const sanDiegoCoords = { lat: 32.7157, lng: -117.1611 };
+    let sunrise, sunset;
+
+    async function fetchSunTimes() {
+      const response = await fetch(
+        `https://api.sunrise-sunset.org/json?lat=${sanDiegoCoords.lat}&lng=${sanDiegoCoords.lng}&formatted=0`
+      );
+      const data = await response.json();
+
+      sunrise = new Date(data.results.sunrise).getTime();
+      sunset = new Date(data.results.sunset).getTime();
+    }
+
+    function setThemeBasedOnTime() {
+      const now = new Date().getTime();
+      const isNight = now < sunrise || now >= sunset;
+
+      body.classList.toggle('night-theme', isNight);
+      body.classList.toggle('day-theme', !isNight);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await fetchSunTimes();
+      setThemeBasedOnTime();
+      setInterval(setThemeBasedOnTime, 60000);
+    });
+  </script>
+</body>
+</html>
